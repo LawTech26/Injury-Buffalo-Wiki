@@ -38,7 +38,7 @@
     background:linear-gradient(180deg, var(--parchment) 0%, var(--parchment-deep) 100%);
     padding:38px 40px 26px;
   }
-  .masthead-inner{max-width:1180px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .masthead-inner{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;}
   .brand-eyebrow{
     font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--brass-deep);margin:0 0 10px;font-weight:500;
@@ -48,11 +48,6 @@
     letter-spacing:-0.01em;
   }
   .brand-sub{font-family:'Lora',serif;font-style:italic;color:var(--ink-soft);font-size:16px;margin:8px 0 0;}
-  .masthead-meta{
-    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);text-align:right;
-    line-height:1.7;
-  }
-  .masthead-meta strong{color:var(--ink);font-weight:500;}
 
   /* ---- Search bar ---- */
   .search-zone{max-width:1180px;margin:0 auto;padding:22px 40px 0;}
@@ -75,7 +70,7 @@
 
   /* ---- Layout ---- */
   .layout{max-width:1180px;margin:0 auto;padding:28px 40px 80px;display:grid;grid-template-columns:230px 1fr;gap:36px;}
-  @media (max-width:860px){.layout{grid-template-columns:1fr;padding:22px 18px 60px;} .masthead{padding:30px 18px 22px;} .search-zone{padding:20px 18px 0;} .masthead-meta{text-align:left;}}
+  @media (max-width:860px){.layout{grid-template-columns:1fr;padding:22px 18px 60px;} .masthead{padding:30px 18px 22px;} .search-zone{padding:20px 18px 0;}}
 
   /* ---- Docket rail (phase nav / signature element) ---- */
   .rail{position:sticky;top:20px;align-self:start;}
@@ -120,6 +115,7 @@
     background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
     padding:16px 16px 14px;box-shadow:var(--shadow);text-decoration:none;color:var(--ink);
     display:flex;flex-direction:column;gap:8px;transition:transform .12s ease, border-color .12s ease;
+    font-family:inherit;text-align:left;cursor:pointer;width:100%;
   }
   .card:hover{border-color:var(--brass);transform:translateY(-1px);}
   .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
@@ -150,22 +146,49 @@
   mark{background:var(--gold-soft);color:inherit;border-radius:2px;padding:0 1px;}
 
   .hidden{display:none !important;}
+
+  /* ---- Detail modal ---- */
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(33,30,26,0.45);z-index:100;
+    display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;
+  }
+  .modal-panel{
+    background:var(--panel);max-width:760px;width:100%;border-radius:var(--radius);
+    box-shadow:0 20px 60px -12px rgba(33,30,26,0.4);margin-bottom:40px;
+  }
+  .modal-head{
+    padding:26px 32px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);
+    display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-radius:var(--radius) var(--radius) 0 0;
+  }
+  .modal-title{font-family:'Lora',serif;font-weight:700;font-size:22px;margin:0 0 8px;}
+  .modal-close{
+    flex:none;background:var(--parchment-deep);border:1px solid var(--line);border-radius:50%;
+    width:32px;height:32px;cursor:pointer;color:var(--ink-soft);font-size:16px;line-height:1;
+  }
+  .modal-close:hover{color:var(--ink);border-color:var(--brass);}
+  .modal-body{padding:24px 32px 32px;font-size:14.5px;line-height:1.7;color:#3A362F;}
+  .modal-body h3, .modal-body h4, .modal-body h5{font-family:'Lora',serif;color:var(--ink);margin:22px 0 8px;}
+  .modal-body h3:first-child, .modal-body h4:first-child{margin-top:0;}
+  .modal-body p{margin:0 0 12px;}
+  .modal-body ul, .modal-body ol{margin:0 0 14px;padding-left:22px;}
+  .modal-body li{margin-bottom:5px;}
+  .modal-body strong{color:var(--ink);}
+  .modal-body blockquote{
+    margin:14px 0;padding:10px 16px;background:var(--gold-soft);border-left:3px solid var(--brass);
+    border-radius:0 3px 3px 0;font-style:italic;
+  }
+  .doc-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+  .doc-table td, .doc-table th{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top;}
+  .doc-table th{background:var(--parchment-deep);font-family:'Inter',sans-serif;font-weight:600;}
+  body.modal-open{overflow:hidden;}
 </style>
 </head>
 <body>
 
   <header class="masthead">
     <div class="masthead-inner">
-      <div>
-        <p class="brand-eyebrow">Internal Reference · Staff &amp; New Hires Only</p>
-        <h1 class="brand-title">The Buffalo Injury Law Firm</h1>
-        <p class="brand-sub">Knowledge Hub — how we work a file, start to finish</p>
-      </div>
-      <div class="masthead-meta">
-        <div><strong id="metaCount">64</strong> procedures on record</div>
-        <div>Source: <strong>Case Tasks</strong> — Notion</div>
-        <div>Organized by case posture</div>
-      </div>
+      <h1 class="brand-title">The Buffalo Injury Law Firm</h1>
+      <p class="brand-sub">Knowledge Hub — how we work a file, start to finish</p>
     </div>
   </header>
 
@@ -181,13 +204,12 @@
     <nav class="rail">
       <p class="rail-label">Case Posture</p>
       <div class="rail-track" id="railTrack"></div>
-      <div class="rail-foot">
-        <a href="https://app.notion.com/p/c0dae061559342718dc8400993bb619e" target="_blank" rel="noopener">↗ Open master list in Notion</a>
-      </div>
     </nav>
 
     <main id="mainContent"></main>
   </div>
+
+  <div id="modalRoot"></div>
 
 <script>
 // ---- Data pulled from the firm's "Case Tasks" Notion database ----
@@ -250,16 +272,16 @@ function render(){
       </div>
       <div class="card-grid">
         ${items.map(item=>`
-          <a class="card" href="${item.u}" target="_blank" rel="noopener">
+          <button class="card" type="button" data-title="${item.t.replace(/"/g,'&quot;')}">
             <div class="card-top">
               <span class="card-title">${highlight(item.t, q)}</span>
-              <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H9M17 7V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
-            ${item.d ? `<div class="card-desc">${highlight(item.d, q)}</div>` : `<div class="card-desc" style="color:#B7AF9D;font-style:italic;">No summary on file — open to view</div>`}
+            ${item.d ? `<div class="card-desc">${highlight(item.d, q)}</div>` : `<div class="card-desc" style="color:#B7AF9D;font-style:italic;">Click to read the full procedure</div>`}
             <div class="card-tags">
               ${item.p.map(tag=>`<span class="tag ${slug(tag)}">${tag}</span>`).join("")}
             </div>
-          </a>
+          </button>
         `).join("")}
       </div>
     </section>`;
@@ -280,6 +302,47 @@ railTrack.addEventListener("click", (e)=>{
   btn.classList.add("active");
   render();
 });
+
+document.getElementById("mainContent").addEventListener("click", (e)=>{
+  const card = e.target.closest(".card");
+  if(!card) return;
+  const item = ITEMS.find(i => i.t === card.dataset.title);
+  if(item) openModal(item);
+});
+
+function openModal(item){
+  const root = document.getElementById("modalRoot");
+  root.innerHTML = `
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal-panel">
+        <div class="modal-head">
+          <div>
+            <h2 class="modal-title">${item.t}</h2>
+            <div class="card-tags">${item.p.map(tag=>`<span class="tag ${slug(tag)}">${tag}</span>`).join("")}</div>
+          </div>
+          <button class="modal-close" id="modalCloseBtn" type="button" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">${item.content || "<p><em>No content on file for this procedure.</em></p>"}</div>
+      </div>
+    </div>
+  `;
+  document.body.classList.add("modal-open");
+  document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+  document.getElementById("modalBackdrop").addEventListener("click", (e)=>{
+    if(e.target.id === "modalBackdrop") closeModal();
+  });
+  document.addEventListener("keydown", escCloseHandler);
+}
+
+function escCloseHandler(e){
+  if(e.key === "Escape") closeModal();
+}
+
+function closeModal(){
+  document.getElementById("modalRoot").innerHTML = "";
+  document.body.classList.remove("modal-open");
+  document.removeEventListener("keydown", escCloseHandler);
+}
 
   render();
 }
