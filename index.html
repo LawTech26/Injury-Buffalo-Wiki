@@ -350,8 +350,11 @@ function closeModal(){
 fetch('data.json')
   .then(r => r.json())
   .then(data => {
-    PHASES = data.phases;
-    ITEMS = data.items;
+    const archivedKeys = data.phases.filter(p => p.archived).map(p => p.key);
+    PHASES = data.phases.filter(p => !p.archived);
+    ITEMS = data.items
+      .map(item => ({...item, p: item.p.filter(k => !archivedKeys.includes(k))}))
+      .filter(item => item.p.length > 0);
     init();
   })
   .catch(err => {
